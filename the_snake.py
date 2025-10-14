@@ -64,7 +64,7 @@ class GameObject:
     def draw(self):
         """Абстрактный метод, для переопределения в дочерних классах."""
         raise NotImplementedError(
-            "Метод draw должен быть переопределен в дочернем классе"
+            'Метод draw должен быть переопределен в дочернем классе'
         )
 
 
@@ -76,7 +76,7 @@ class Apple(GameObject):
         Инициализирует яблоко с красным цветом и случайной позицией.
 
         Args:
-            occupied_positions: Набор занятых позиций, где яблоко не должно появляться.
+            occupied_positions: Набор занятых позиций.
         """
         super().__init__(APPLE_COLOR)
         self.randomize_position(occupied_positions)
@@ -86,7 +86,7 @@ class Apple(GameObject):
         Устанавливает случайное положение яблока на игровом поле.
 
         Args:
-            occupied_positions: Набор занятых позиций, где яблоко не должно появляться.
+            occupied_positions: Набор занятых позиций.
         """
         while True:
             new_position = (
@@ -134,7 +134,10 @@ class Snake(GameObject):
             (head_y + dir_y * GRID_SIZE) % SCREEN_HEIGHT
         )
         self.positions.insert(0, new_head)
-        self.last = self.positions.pop() if len(self.positions) > self.length else None
+        if len(self.positions) > self.length:
+            self.last = self.positions.pop()
+        else:
+            self.last = None
 
     def draw(self):
         """Отрисовывает змейку на игровой поверхности."""
