@@ -196,7 +196,12 @@ def main():
 
 
 def handle_keys(game_object):
-    """Функция обработки действий пользователя."""
+    """
+    Функция обработки действий пользователя.
+
+    Args:
+        game_object: Объект змейки.
+    """
     for event in pg.event.get():
         if event.type == pg.QUIT:
             pg.quit()
