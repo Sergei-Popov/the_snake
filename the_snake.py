@@ -136,7 +136,7 @@ class Snake(GameObject):
         self.positions.insert(0, new_head)
         self.last = self.positions.pop() if len(self.positions) > self.length else None
 
-    def draw(self):  # Это метод из прекода, его мы не пишем самостоятельно
+    def draw(self):
         """Отрисовывает змейку на игровой поверхности."""
         for position in self.positions[:-1]:
             rect = pg.Rect(position, (GRID_SIZE, GRID_SIZE))
