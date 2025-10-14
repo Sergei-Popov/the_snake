@@ -7,7 +7,7 @@
 сталкивается сама с собой.
 """
 
-from random import randint
+from random import randint, choice
 
 import pygame as pg
 
@@ -113,14 +113,17 @@ class Snake(GameObject):
         self.length = 1
         self.positions = [(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)]
         self.direction = RIGHT
-        self.next_direction = None
         self.last = None
 
-    def update_direction(self):
-        """Обновляет направление движения змейки."""
-        if self.next_direction:
-            self.direction = self.next_direction
-            self.next_direction = None
+    def update_direction(self, new_direction):
+        """
+        Обновляет направление движения змейки.
+
+        Args:
+            new_direction: Новое направление движения змейки.
+        """
+        if new_direction:
+            self.direction = new_direction
 
     def move(self):
         """Обновляет позицию змейки."""
@@ -159,8 +162,7 @@ class Snake(GameObject):
         """Сбрасывает змейку в начальное состояние."""
         self.length = 1
         self.positions = [(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)]
-        self.direction = RIGHT
-        self.next_direction = None
+        self.direction = choice([RIGHT, LEFT, DOWN, UP])
         self.last = None
 
 
@@ -175,14 +177,15 @@ def main():
         clock.tick(SPEED)
 
         handle_keys(snake)
-        snake.update_direction()
         snake.move()
 
-        if snake.get_head_position() == apple.position:
+        head_position = snake.get_head_position()
+
+        if head_position == apple.position:
             snake.length += 1
             apple.randomize_position(snake.positions)
 
-        if snake.get_head_position() in snake.positions[1:]:
+        if head_position in snake.positions[1:]:
             snake.reset()
             apple.randomize_position()
             screen.fill(BOARD_BACKGROUND_COLOR)
@@ -198,15 +201,15 @@ def handle_keys(game_object):
         if event.type == pg.QUIT:
             pg.quit()
             raise SystemExit
-        elif event.type == pg.KEYDOWN:
+        if event.type == pg.KEYDOWN:
             if event.key == pg.K_UP and game_object.direction != DOWN:
-                game_object.next_direction = UP
+                game_object.update_direction(UP)
             elif event.key == pg.K_DOWN and game_object.direction != UP:
-                game_object.next_direction = DOWN
+                game_object.update_direction(DOWN)
             elif event.key == pg.K_LEFT and game_object.direction != RIGHT:
-                game_object.next_direction = LEFT
+                game_object.update_direction(LEFT)
             elif event.key == pg.K_RIGHT and game_object.direction != LEFT:
-                game_object.next_direction = RIGHT
+                game_object.update_direction(RIGHT)
 
 
 if __name__ == '__main__':
