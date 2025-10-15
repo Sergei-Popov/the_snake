@@ -62,7 +62,12 @@ class GameObject:
         self.body_color = body_color
 
     def draw(self):
-        """Абстрактный метод, для переопределения в дочерних классах."""
+        """
+        Абстрактный метод, для переопределения в дочерних классах.
+        
+        Raises:
+            NotImplementedError: Метод должен быть реализован в подклассе.
+        """
         raise NotImplementedError(
             'Метод draw должен быть переопределен в дочернем классе'
         )
@@ -158,7 +163,12 @@ class Snake(GameObject):
             pg.draw.rect(screen, BOARD_BACKGROUND_COLOR, last_rect)
 
     def get_head_position(self):
-        """Возвращает позицию головы змейки."""
+        """
+        Возвращает позицию головы змейки.
+        
+        Returns:
+            tuple[int, int]: Кортеж с координатами (x, y) головы змейки.
+        """
         return self.positions[0]
 
     def reset(self):
@@ -171,31 +181,34 @@ class Snake(GameObject):
 
 def main():
     """Инициализация pygame."""
-    pg.init()
-    snake = Snake()
-    apple = Apple(snake.positions)
-    screen.fill(BOARD_BACKGROUND_COLOR)
-
-    while True:
-        clock.tick(SPEED)
-
-        handle_keys(snake)
-        snake.move()
-
-        head_position = snake.get_head_position()
-
-        if head_position == apple.position:
-            snake.length += 1
-            apple.randomize_position(snake.positions)
-
-        if head_position in snake.positions[1:]:
-            snake.reset()
-            apple.randomize_position()
-            screen.fill(BOARD_BACKGROUND_COLOR)
-
-        apple.draw()
-        snake.draw()
-        pg.display.update()
+    try:
+        pg.init()
+        snake = Snake()
+        apple = Apple(snake.positions)
+        screen.fill(BOARD_BACKGROUND_COLOR)
+    
+        while True:
+            clock.tick(SPEED)
+    
+            handle_keys(snake)
+            snake.move()
+    
+            head_position = snake.get_head_position()
+    
+            if head_position == apple.position:
+                snake.length += 1
+                apple.randomize_position(snake.positions)
+    
+            if head_position in snake.positions[1:]:
+                snake.reset()
+                apple.randomize_position(snake.positions)
+                screen.fill(BOARD_BACKGROUND_COLOR)
+    
+            apple.draw()
+            snake.draw()
+            pg.display.update()
+    except KeyboardInterrupt:
+        print('Пользователь завершил работу программы.')
 
 
 def handle_keys(game_object):
@@ -204,6 +217,10 @@ def handle_keys(game_object):
 
     Args:
         game_object: Объект змейки.
+        
+    Raises:
+        SystemExit: При получении события `pygame.QUIT` (например,
+                    когда пользователь закрывает окно).
     """
     for event in pg.event.get():
         if event.type == pg.QUIT:
